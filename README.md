@@ -3,26 +3,27 @@ This IPython extension adds `%poly` magics for querying a [Polypheny](https://po
 The extension was heavily inspired by the [IPython SQL Extension](https://github.com/catherinedevlin/ipython-sql).
 
 ## Installation
-### Requirements
-Required Packages:
-- ipython
-- requests
-- json
 
-Optional Packages:
-- pandas
-
-### Get it PyPI
+### Get it via PyPI
 The package is not yet available on [PyPI](https://pypi.org/).
 
 ### Building & Installing the Package
 From the top level directory, first execute `python -m build`.  
 This should create a `.tar.gz` and `.whl` file in `dist/`.  
-Now you can install the built package with `python -m pip install ./dist/<file-name>.whl`
+Now you can install the built package with `python -m pip install ./dist/<file-name>.whl`.
 
-### For Development
+### During Development
 Since installation of a package is usually not needed for development, it can be installed in editable mode:  
 Execute `python -m pip install -e .` from the top level folder of the project.
+
+Changes to the codebase should now be reflected immediately after reloading the extension.  
+It is useful to have [autoreload](https://ipython.org/ipython-doc/3/config/extensions/autoreload.html) running, to automatically reload the extension:
+```python
+%load_ext autoreload
+%autoreload 2
+
+%load_ext poly
+```
 
 ## Usage
 First, the extension needs to be loaded:
@@ -61,7 +62,7 @@ result = %poly sql: SELECT * FROM emps
 ```
 
 Additionally to the query language, a namespace can be specified. 
-It is also possible to set flags. The `-c` flag deactivates the cache for this query.:
+It is also possible to set flags. The `-c` flag deactivates the cache for this query:
 ```python
 %%poly mql mynamespace -c
 db.emps.find({})
