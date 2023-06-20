@@ -52,12 +52,13 @@ This is the ideal syntax for querying the database, where the command specifies 
 %%poly sql
 SELECT * FROM emps
 ```
+The result is automatically printed as a nicely formatted table.
 
 Storing the result in a variable:
 ```python
 result = _
 
-# Or when using line magics (note the now mandatory colon):
+# Or when using line magics (note the required colon that separates the query from the command):
 result = %poly sql: SELECT * FROM emps
 ```
 
@@ -68,23 +69,46 @@ It is also possible to set flags. The `-c` flag deactivates the cache for this q
 db.emps.find({})
 ```
 
-### Advanced Functionality
+### Working With the Result
 The result object provides useful ways to work with the retrieved data.  
-Provided [Pandas](https://pypi.org/project/pandas/) is installed, it is possible to transform the result in a `DataFrame`:
 ```python
 result = %poly sql: SELECT * FROM emps
+```
+Getting the raw `ResultSet`:
+```python
+result.result_set
+```
+The data can be accessed like a two-dimensional list:
+```python
+# get the value of the element in the first row and second column
+result[0][1]
+```
+Iterate over the rows as dicts:
+```python
+for employee in result.dicts():
+    print(employee['name'], employee['salary'])
+```
+
+
+Provided [Pandas](https://pypi.org/project/pandas/) is installed, it is possible to transform the result into a `DataFrame`:
+```python
 df = result.as_df()
 ```
 
-### Planned Features
-The following features are not yet implemented.
+### Advanced Features
 
-It should be possible to inject variables defined in the local namespace into a query:
+It is possible to expand variables defined in the local namespace into a query.
+For this to work, the `--template` (shorter: `-t`) flag must be set:
 ```python
+key = 'salary'
 x = 10000
-%% poly sql: SELECT * FROM emps WHERE salary > ${x}
+
+%% poly -t sql: SELECT * FROM emps WHERE ${key} > ${x}
+
+# is equal to
+%% poly sql: SELECT * FROM emps WHERE salary > 10000
 ```
-The syntax for specifying variables in a query is not yet final.
+Be careful to not accidentally inject unwanted queries, as the values are not escaped.
 
 ## License
 The Apache 2.0 License

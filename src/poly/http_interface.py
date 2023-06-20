@@ -6,14 +6,13 @@ from .poly_result import build_result
 class HttpInterface:
     _base_url = ''
 
-    def request(self, query, language, namespace, use_cache):
+    def request(self, query, language, namespace):
         if self._base_url == '':
-            print('URL to Polypheny is not set!')
+            print('URL to Polypheny is not yet set! Use %poly db: <url> to set the url')
             return None
-        print('Requesting to:', self._base_url, '\t Query:', query)
         req = {'query': query,
                'analyze': False,
-               'cache': use_cache,
+               'cache': True,
                'language': language,
                'database': namespace}
         url = f'{self._base_url}/{language}'
@@ -23,7 +22,6 @@ class HttpInterface:
         url = url.strip(" /'\"")
         if not url:
             raise ValueError('Submitted URL is invalid')
-        print('setting url to:', url)
         self._base_url = url
 
     def __str__(self):
