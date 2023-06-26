@@ -4,9 +4,7 @@ on:
     push:
         branches:
             - main
-    issues: # for debugging
-        types:
-            - opened
+    workflow_dispatch
 jobs:
     build:
         runs-on: ubuntu-latest
