@@ -25,13 +25,43 @@ def get_result_dict(raw_result: Union[str, dict, List[dict]]) -> Union[None, dic
     return raw_result
 
 
-class QueryPolyResult(list):
+def get_type_from_string(type_string):
+    cleaned = type_string.strip().upper()
+    if cleaned in ['INTEGER', 'BIGINT', 'SMALLINT', 'TINYINT']:
+        return int
+    if cleaned == 'BOOLEAN':
+        return bool
+    if cleaned in ['DECIMAL', 'DOUBLE', 'REAL']:
+        return float
+    if cleaned in ['ARRAY', 'JSON', 'DOCUMENT', 'DOCUMENT NOT NULL']:
+        return json.loads
+    if cleaned.startswith('PATH') or cleaned.startswith('NODE'):
+        return json.loads
+    return None
+
+
+def cast_data(raw_data, header):
+    data = [row[:] for row in raw_data]  # Create shallow copy
+    data_types = [get_type_from_string(col['dataType']) for col in header]
+
+    for col_idx, col_type in enumerate(data_types):
+        if col_type is None:
+            continue
+        for row_idx in range(len(data)):
+            try:
+                data[row_idx][col_idx] = col_type(data[row_idx][col_idx])
+            except (TypeError, json.JSONDecodeError):
+                pass
+    return data
+
+
+class QueryPolyResult(list):  # Data is stored in a nested list. For simplicity, we do not use Numpy, but Python lists
     def __init__(self, result_set):
         self.result_set = result_set
         self.type = result_set['namespaceType']
         self._header = result_set['header']
-        self._data = result_set['data']
         self.keys = [col['name'] for col in self._header]
+        self._data = cast_data(result_set['data'], self._header)
         self._pretty = PrettyTable(self.keys)
         self._pretty.add_rows(self._data)
         self._pretty.set_style(PLAIN_COLUMNS)
@@ -43,12 +73,8 @@ class QueryPolyResult(list):
     def _repr_html_(self):
         return self._pretty.get_html_string()
 
-    def dicts_list(self):
-        return [dict(zip(self.keys, row)) for row in self._data]
-
     def dicts(self):
-        for row in self._data:
-            yield dict(zip(self.keys, row))
+        return [dict(zip(self.keys, row)) for row in self._data]
 
     def as_df(self):
         import pandas as pd  # only import pandas if required

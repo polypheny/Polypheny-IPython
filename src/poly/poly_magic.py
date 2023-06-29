@@ -18,7 +18,6 @@ class PolyMagics(Magics):
 
     def __init__(self, shell):
         super().__init__(shell)
-        print('Initialized ipython-polypheny extension')
         self.database = HttpInterface()
         self.ns = None
 
@@ -31,7 +30,8 @@ class PolyMagics(Magics):
     @magic_arguments()
     @argument(
         "command",
-        choices=('db', 'info', 'help', 'sql', 'mql', 'cypher', 'pig', 'cql', 'load'),  # Specifies all possible subcommands
+        choices=('db', 'info', 'help', 'sql', 'mql', 'cypher', 'pig', 'cql', 'load'),
+        # Specifies all possible subcommands
         help="Specify the command to be used.",
     )
     @argument(
