@@ -7,53 +7,36 @@
 </p> 
 
 # Polypheny Extension for IPython
-This IPython extension adds `%poly` magics for querying a [Polypheny](https://polypheny.org/) polystore.  
-The extension was heavily inspired by the wonderful [IPython SQL Extension](https://github.com/catherinedevlin/ipython-sql).
+This IPython extension adds `%poly` magics for querying [Polypheny](https://polypheny.org/) using any of the supported query languages. This extension takes inspiration from the brilliant [IPython SQL Extension](https://github.com/catherinedevlin/ipython-sql).
 
 ## Installation
 
-### Get it via PyPI
+### Via PyPi
 The recommended way to install the package is with pip:
 ```bash
 pip install ipython-polypheny
 ```
 
-### Building & Installing the Package From Source
+### From Source
 If you do not want to use pip, you can download the code and build it manually.
 
-From the top level directory, first execute `python -m build`.  
-This should create a `.tar.gz` and `.whl` file in `dist/`.  
-Now you can install the built package with `python -m pip install ./dist/<file-name>.whl`.
-
-### For Development
-Since installation of a package is usually not needed for development, it can be installed in editable mode:  
-Execute `python -m pip install -e .` from the top level folder of the project.
-
-Changes to the codebase should now be reflected immediately after reloading the extension.  
-It is useful to have [autoreload](https://ipython.org/ipython-doc/3/config/extensions/autoreload.html) running, to automatically reload the extension:
-```python
-%load_ext autoreload
-%autoreload 2
-
-%load_ext poly
-```
+1. Download the source code.
+2. At the root directory, run python -m build. This will produce .tar.gz and .whl files in the dist/ folder.
+3. Install the package using: python -m pip install ./dist/<file-name>.whl.
 
 ## Usage
-First, the extension needs to be loaded:
+Activate the extension using:
 ```python
 %load_ext poly
 ```
 
-Both line magics (lines starting with `%poly`) and cell magics (cells starting with`%%poly`) can be used.  
-Following the magic keyword, a command must be specified.  
-
-Here is a basic example:
+You can utilize both line magics (%poly) and cell magics (%%poly). A command must always follow the magic keyword. For instance: 
 ```python
 # Print help
 %poly help
 ```
 
-If a command expects an argument, then it must be separated with a colon (`:`):
+Commands requiring arguments should separate them using a colon (:):
 ```python
 # Specify the http-interface address of a running Polypheny instance.
 %poly db: http://localhost:13137
@@ -66,6 +49,8 @@ This is the ideal syntax for querying the database, where the command specifies 
 SELECT * FROM emps
 ```
 The result is automatically printed as a nicely formatted table.
+
+Interact with the retrieved data in multiple ways:
 
 Storing the result in a variable:
 ```python
@@ -102,7 +87,6 @@ for employee in result.dicts():
     print(employee['name'], employee['salary'])
 ```
 
-
 Provided [Pandas](https://pypi.org/project/pandas/) is installed, it is possible to transform the result into a `DataFrame`:
 ```python
 df = result.as_df()
@@ -124,7 +108,7 @@ x = 10000
 Be careful to not accidentally inject unwanted queries, as the values are not escaped.
 
 ## Data Types
-Many file types supported by Polypheny are automatically casted to corresponding Python data types:
+Polypheny's data types are mapped to Python's as follows:
 
 | Type in Polypheny                          | Type in Python  |
 |:-------------------------------------------|:----------------|
@@ -134,17 +118,39 @@ Many file types supported by Polypheny are automatically casted to corresponding
 | `DOCUMENT`, `JSON`, `NODE`, `PATH`         | `dict`          |
 | `ARRAY`                                    | `list`          |
 
-Any other types are stored as `str`. The same is true for values where the casting does not succeed.
-
-If the raw data as a nested `list` of `str` is required, one can get it from the `ResultSet`:
+Other types are stored as str. Failed casting operations will also result in str.  If the raw data as a nested `list` of `str` is required, one can get it from the `ResultSet`:
 ```python
 raw_data = result.result_set['data']
 ```
 
 ### Limitations
-Working with (multimedia) file types is currently not supported.
-While it does not result in an error, only the identifier for a given file is stored, not the actual file content.
+Working with multimedia and other blob types is currently not supported. While it does not result in an error, only the identifier is stored, not the actual content.
 
+
+## Contributing
+Thank you for considering contributing! We truly appreciate any effort, whether it's fixing bugs, improving documentation, or suggesting new features. Here's a guide to help streamline the process:
+
+1. **Start by Forking**: Begin by forking the repository. Once done, you can work on your changes and then submit them as a pull request.
+
+2. **Development Guidelines**: Before diving in, take a moment to explore our [Documentation](https://docs.polypheny.com). Pay special attention to the 'For Developers' section — it offers insights on setup, code style, organization, and other valuable resources tailored for developers.
+
+3. **Adherence to Code of Conduct**: We are committed to fostering an open and welcoming environment. As such, we request all contributors to uphold the standards outlined in our [code of conduct](https://github.com/polypheny/Admin/blob/master/CODE_OF_CONDUCT.md) throughout their interactions related to the project.
+
+4. **Setting up for Development**:
+   - **Editable Installation**: To see your code changes reflected in real-time, install the extension in an editable mode. Execute the following command from the root directory of the extension:
+     ```bash
+     python -m pip install -e .
+     ```
+     This allows any modifications in the codebase to be instantly visible post-reloading the extension.
+     
+   - **Utilize Autoreload**: For a smoother development experience, consider activating the [autoreload](https://ipython.org/ipython-doc/3/config/extensions/autoreload.html) extension. This tool automatically reloads the extension and incorporates the recent code changes:
+     ```python
+     %load_ext autoreload
+     %autoreload 2
+     %load_ext poly
+     ```
+
+Thank you for your dedication and enthusiasm for enhancing the Polypheny ecosystem! We look forward to reviewing your valuable contributions.
 
 ## License
 The Apache 2.0 License
