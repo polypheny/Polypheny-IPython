@@ -87,7 +87,7 @@ class InfoPolyResult:
 
     def __repr__(self):
         rows = ['Successfully executed:',
-                'Query:'.ljust(30) + str(self.result_set['generatedQuery'])
+                'Query:'.ljust(30) + str(self.result_set['query'])
                 ]
         return "\n".join(rows)
 
@@ -98,7 +98,7 @@ class ErrorPolyResult:
 
     def __repr__(self):
         rows = ['ERROR:',
-                'Query:'.ljust(30) + str(self.result_set['generatedQuery']),
+                'Query:'.ljust(30) + str(self.result_set['query']),
                 'Message:'.ljust(30) + str(self.result_set['error'])
                 ]
         return "\n".join(rows)
