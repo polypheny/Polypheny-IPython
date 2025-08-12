@@ -145,7 +145,7 @@ class PolyMagics(Magics):
 
 def separate_args(line, cell, split_str=":"):
     """
-    Finds the first occurence of an element of termination_strings in line. The line is split after this element and
+    Finds the first occurrence of an element of termination_strings in line. The line is split after this element and
     the two parts are returned.
     """
     if cell is None:
