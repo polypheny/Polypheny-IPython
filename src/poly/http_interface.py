@@ -18,6 +18,16 @@ class HttpInterface:
         url = f'{self._base_url}/{language}'
         return build_result(requests.post(url, json=req).json()[-1])  # return only the last result
 
+    def schema_tree(self):
+        if self._base_url == '':
+            print('URL to Polypheny is not yet set! Use %poly db: <url> to set the url')
+            return None
+        req = {}
+        url = f'{self._base_url}/schema'
+        res = requests.post(url, json=req)
+
+        return res.json()
+
     def set_url(self, url):
         url = url.strip(" /'\"")
         if not url:
