@@ -222,7 +222,7 @@ def separate_args(line, cell, split_str=":"):
     if cell is None:
         split_str += ' '  # if line_magic, check for space after split_str. (e.g. to ignore http://)
 
-    if not split_str in line:
+    if not split_str in line and "retrieve" in line:
         splits = line.split(" ")
         if len(splits) > 1:
             return splits[0], splits[1:]

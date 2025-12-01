@@ -38,3 +38,8 @@ def test_poly_store(ip_shell: InteractiveShell):
     ip_shell.run_line_magic('poly', f'store name_var : value')  # truncate
     assert len(ip_shell.run_line_magic('poly', 'retrieve name_var')) == 2
 
+def test_default(ip_shell: InteractiveShell):
+    ip_shell.run_line_magic('load_ext', 'poly')
+    ip_shell.run_line_magic('poly', 'db: http://localhost:13137')
+    result = ip_shell.run_line_magic('poly', '-i -j load SELECT * FROM emps')
+    print(result)

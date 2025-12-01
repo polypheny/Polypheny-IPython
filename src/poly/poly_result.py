@@ -6,6 +6,8 @@ from prettytable import PrettyTable, PLAIN_COLUMNS
 def build_result(raw_result: Union[str, dict, List[dict]]):
     result_set = get_result_dict(raw_result)
 
+    print(result_set)
+
     if result_set.get('error') is not None:
         return ErrorPolyResult(result_set)
     if 'header' not in result_set:
